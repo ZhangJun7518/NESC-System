@@ -96,33 +96,5 @@ The system supports **four user roles** (System Administrator, Headquarters Exec
 └──────────────────────────────────────────────────────────┘
 
 ## 🏗️ PRoject content
-NESC-System/
-├── backend/                  # 后端服务
-│   ├── middlewares/          # JWT鉴权、全局异常拦截
-│   ├── routes/               # API路由
-│   │   ├── auth.js
-│   │   ├── dashboard.js
-│   │   ├── product.js
-│   │   ├── sales.js
-│   │   ├── transfer.js
-│   │   └── system.js
-│   ├── db.js                 # MySQL 连接池
-│   ├── app.js                # 入口文件
-│   ├── .env                  # 环境变量（不提交到 Git）
-│   └── package.json
-├── infront-react/            # 前端项目
-│   ├── public/               # 静态资源（背景视频、图片）
-│   ├── src/
-│   │   ├── api/              # Axios 封装
-│   │   ├── components/       # 公共组件（AuthButton等）
-│   │   ├── layouts/          # 主框架布局
-│   │   ├── pages/            # 页面（登录、看板、商品、收银、调拨、系统）
-│   │   ├── utils/            # 工具函数（权限字典）
-│   │   ├── App.jsx
-│   │   ├── main.jsx
-│   │   └── i18n.js           # 多语言配置
-│   └── package.json
-├── init_sql/                 # 数据库初始化脚本
-│   └── init.sql
-├── docker-compose.yml        # Docker 编排
-└── README.md
+<img width="753" height="1027" alt="image" src="https://github.com/user-attachments/assets/6c3f4a3b-3fab-473c-8420-b2f2f84fe67d" />
+
