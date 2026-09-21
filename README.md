@@ -94,6 +94,8 @@ The system supports **four user roles** (System Administrator, Headquarters Exec
 │ MySQL 8.0 (Docker) │
 │ users / goods / sales / audit_logs / replenish_requests │
 └──────────────────────────────────────────────────────────┘
+
+## 🏗️ PRoject content
 NESC-System/
 ├── backend/                  # 后端服务
 │   ├── middlewares/          # JWT鉴权、全局异常拦截
