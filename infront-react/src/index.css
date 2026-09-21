@@ -1,0 +1,124 @@
+/* ==================== 全局基础重置 ==================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+  background-color: #f0f2f5;
+  color: #333;
+}
+
+/* ==================== 登录页视频背景 ==================== */
+.login-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #001529;
+}
+
+.bg-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 21, 41, 0.75);
+  z-index: 1;
+}
+
+.login-card {
+  position: relative;
+  width: 400px;
+  padding: 40px;
+  border-radius: 12px;
+  background: rgba(0, 21, 41, 0.85);
+  box-shadow:
+    0 0 30px rgba(0, 180, 255, 0.2),
+    inset 0 0 15px rgba(0, 180, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 180, 255, 0.3);
+  z-index: 10;
+}
+
+.login-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #00b4ff;
+  letter-spacing: 2px;
+  margin-bottom: 30px;
+  text-shadow: 0 0 10px rgba(0, 180, 255, 0.5);
+}
+
+.login-card .ant-input,
+.login-card .ant-input-affix-wrapper {
+  background: rgba(0, 21, 41, 0.6) !important;
+  border-color: rgba(0, 180, 255, 0.3) !important;
+  color: #fff !important;
+}
+.login-card .ant-input::placeholder {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+.login-card .ant-input-prefix {
+  color: #00b4ff !important;
+}
+
+/* ==================== 卡片悬浮科技感 ==================== */
+.ant-card {
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+.ant-card:hover {
+  border-color: rgba(0, 180, 255, 0.3);
+  box-shadow: 0 6px 16px rgba(0, 180, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+/* ==================== 👈 核心：表格透明化，透出背景图 ==================== */
+/* 让表格、表头、行、单元格背景全部透明 */
+.ant-table,
+.ant-table-thead th,
+.ant-table-tbody td,
+.ant-table-tbody tr {
+  background: transparent !important;
+}
+
+/* 表头增加一点淡蓝色调，显得专业 */
+.ant-table-thead th {
+  background: rgba(0, 58, 112, 0.1) !important;
+  color: #003a70 !important;
+  font-weight: bold !important;
+  border-bottom: 1px solid rgba(0, 58, 112, 0.2) !important;
+}
+
+/* 表格行分隔线调淡 */
+.ant-table-tbody td {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+/* 鼠标悬停时，行高亮 */
+.ant-table-tbody tr:hover td {
+  background: rgba(0, 180, 255, 0.08) !important;
+}
+
+/* 卡片背景半透明，配合毛玻璃效果 */
+.ant-card-bordered {
+  background: rgba(255, 255, 255, 0.6) !important;
+  backdrop-filter: blur(6px) !important;
+}
