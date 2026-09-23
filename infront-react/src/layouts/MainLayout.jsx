@@ -20,6 +20,7 @@ import {
   DownOutlined,
   CarOutlined,
   GlobalOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
 import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
 import { login } from "../api/auth";
@@ -31,8 +32,9 @@ const { Sider, Content, Footer } = Layout;
 const MainLayout = () => {
   const { t, i18n } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
-  const [tabs, setTabs] = useState([{ key: "/dashboard" }]);
-  const [activeKey, setActiveKey] = useState("/dashboard");
+  const [isMobile, setIsMobile] = useState(false); // 👈 新增：判断是否是手机
+  const [tabs, setTabs] = useState([{ key: "/welcome" }]);
+  const [activeKey, setActiveKey] = useState("/welcome");
   const navigate = useNavigate();
   const location = useLocation();
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
@@ -40,20 +42,30 @@ const MainLayout = () => {
     token: { colorBgContainer },
   } = theme.useToken();
 
-  // 演示身份切换
+  // 👈 新增：监听屏幕尺寸变化，手机端自动折叠侧边栏
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (mobile) setCollapsed(true);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   const handleRoleSwitch = async ({ key }) => {
     try {
       const res = await login({ username: key, password: "123456" });
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("userInfo", JSON.stringify(res.data.userInfo));
       message.success(`已切换为: ${res.data.userInfo.real_name}`);
-      window.location.href = "/dashboard";
+      window.location.href = "/welcome";
     } catch (error) {
       message.error("切换失败");
     }
   };
 
-  // 语言切换
   const handleLanguageChange = async ({ key }) => {
     await i18n.changeLanguage(key);
     localStorage.setItem("lang", key);
@@ -73,6 +85,11 @@ const MainLayout = () => {
     }
     if (role === "admin" || role === "hq_leader") {
       return [
+        {
+          key: "/welcome",
+          icon: <HomeOutlined />,
+          label: <Link to="/welcome">{t("menu.welcome")}</Link>,
+        },
         {
           key: "/dashboard",
           icon: <DashboardOutlined />,
@@ -102,6 +119,11 @@ const MainLayout = () => {
     }
     return [
       {
+        key: "/welcome",
+        icon: <HomeOutlined />,
+        label: <Link to="/welcome">{t("menu.welcome")}</Link>,
+      },
+      {
         key: "/dashboard",
         icon: <DashboardOutlined />,
         label: <Link to="/dashboard">{t("menu.dashboard")}</Link>,
@@ -130,6 +152,7 @@ const MainLayout = () => {
     }
     setActiveKey(key);
     navigate(key);
+    if (isMobile) setCollapsed(true); // 手机端点击菜单后自动收起侧边栏
   };
 
   useEffect(() => {
@@ -147,10 +170,11 @@ const MainLayout = () => {
         theme="dark"
         style={{
           background: "#001529",
-          position: "sticky",
+          position: isMobile ? "fixed" : "sticky",
           top: 0,
           height: "100vh",
           overflow: "auto",
+          zIndex: 100,
         }}
       >
         <div
@@ -179,8 +203,14 @@ const MainLayout = () => {
         />
       </Sider>
 
-      <Layout style={{ display: "flex", flexDirection: "column" }}>
-        {/* 👈 Header 与 Tabs 合并 */}
+      {/* 👈 手机端给内容区加左边距，避免被固定的侧边栏遮挡 */}
+      <Layout
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          marginLeft: isMobile ? 80 : 0,
+        }}
+      >
         <div
           style={{
             display: "flex",
@@ -188,12 +218,13 @@ const MainLayout = () => {
             background: colorBgContainer,
             height: 50,
             flexShrink: 0,
-            padding: "0 20px",
+            padding: "0 10px",
             boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
             zIndex: 10,
+            overflowX: "auto",
           }}
         >
-          <div style={{ flex: 1, overflow: "hidden" }}>
+          <div style={{ flex: 1, overflow: "hidden", minWidth: 0 }}>
             <Tabs
               type="editable-card"
               hideAdd
@@ -208,30 +239,28 @@ const MainLayout = () => {
                   setTabs(newTabs);
                   if (activeKey === targetKey) {
                     const lastTab = newTabs[newTabs.length - 1];
-                    navigate(lastTab ? lastTab.key : "/dashboard");
+                    navigate(lastTab ? lastTab.key : "/welcome");
                   }
                 }
               }}
               items={tabs.map((tab) => ({
                 key: tab.key,
                 label: t(`menu.${tab.key.substring(1)}`),
-                closable: tab.key !== "/dashboard",
+                closable: tab.key !== "/welcome",
               }))}
               style={{ marginBottom: 0 }}
             />
           </div>
 
-          {/* 👈 右上角：语言切换 + 系统管理员 */}
           <div
             style={{
               flexShrink: 0,
               display: "flex",
               alignItems: "center",
-              gap: 20,
-              marginLeft: 20,
+              gap: 10,
+              marginLeft: 10,
             }}
           >
-            {/* 语言切换 */}
             <Dropdown
               menu={{
                 items: [
@@ -242,16 +271,9 @@ const MainLayout = () => {
                 onClick: handleLanguageChange,
               }}
             >
-              <Button type="text" icon={<GlobalOutlined />} size="small">
-                {i18n.language === "zh"
-                  ? "中文"
-                  : i18n.language === "en"
-                    ? "English"
-                    : "Русский"}
-              </Button>
+              <Button type="text" icon={<GlobalOutlined />} size="small" />
             </Dropdown>
 
-            {/* 系统管理员下拉菜单 */}
             <Dropdown
               menu={{
                 items: [
@@ -280,7 +302,7 @@ const MainLayout = () => {
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
-                  gap: 8,
+                  gap: 5,
                 }}
               >
                 <Avatar
@@ -288,30 +310,31 @@ const MainLayout = () => {
                   icon={<UserOutlined />}
                   style={{ backgroundColor: "#003a70" }}
                 />
-                <span style={{ color: "#003a70" }}>
-                  {userInfo.real_name || "系统管理员"}
-                </span>
+                {!isMobile && (
+                  <span style={{ color: "#003a70" }}>
+                    {userInfo.real_name || "系统管理员"}
+                  </span>
+                )}
               </span>
             </Dropdown>
           </div>
         </div>
 
-        {/* 👈 主内容区：调整遮罩为半透明，透出背景图 */}
+        {/* 👈 主内容区：手机端去掉固定高度，允许自然滚动 */}
         <Content
           style={{
-            margin: "8px 12px",
-            padding: 8,
+            margin: isMobile ? "8px" : "8px 12px",
+            padding: isMobile ? 8 : 16,
             borderRadius: 8,
             minHeight: "calc(100vh - 110px)",
             position: "relative",
-            overflow: "hidden",
+            overflow: "visible", // 手机上允许页面滚动
             backgroundImage: "url(/bg-main.jpg)",
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundAttachment: "fixed",
           }}
         >
-          {/* 👈 核心调整：遮罩层变为半透明，透出背景图 */}
           <div
             style={{
               position: "absolute",
@@ -319,51 +342,47 @@ const MainLayout = () => {
               left: 0,
               right: 0,
               bottom: 0,
-              backgroundColor: "rgba(255, 255, 255, 0.75)", // 透明度从 0.92 降到 0.75，背景图隐约可见
-              backdropFilter: "blur(4px)",
+              backgroundColor: "rgba(255, 255, 255, 0.88)",
               zIndex: 0,
             }}
           />
-          <div
-            style={{
-              position: "absolute",
-              top: "15px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              color: "#003a70",
-              fontSize: "20px",
-              fontWeight: "bold",
-              letterSpacing: "4px",
-              opacity: 0.15,
-              zIndex: 1,
-              pointerEvents: "none",
-            }}
-          >
-            VSTU
-          </div>
-          <div
-            style={{
-              position: "absolute",
-              bottom: "20px",
-              right: "20px",
-              color: "#00b4ff",
-              fontSize: "60px",
-              opacity: 0.15,
-              zIndex: 1,
-              pointerEvents: "none",
-            }}
-          >
-            <CarOutlined />
-          </div>
+          {!isMobile && (
+            <div
+              style={{
+                position: "absolute",
+                top: "15px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                color: "#003a70",
+                fontSize: "20px",
+                fontWeight: "bold",
+                letterSpacing: "4px",
+                opacity: 0.1,
+                zIndex: 1,
+                pointerEvents: "none",
+              }}
+            >
+              VSTU
+            </div>
+          )}
+          {!isMobile && (
+            <div
+              style={{
+                position: "absolute",
+                bottom: "20px",
+                right: "20px",
+                color: "#00b4ff",
+                fontSize: "60px",
+                opacity: 0.12,
+                zIndex: 1,
+                pointerEvents: "none",
+              }}
+            >
+              <CarOutlined />
+            </div>
+          )}
 
-          <div
-            style={{
-              position: "relative",
-              zIndex: 2,
-              height: "100%",
-              overflow: "auto",
-            }}
-          >
+          <div style={{ position: "relative", zIndex: 2, height: "100%" }}>
             <Outlet />
           </div>
         </Content>

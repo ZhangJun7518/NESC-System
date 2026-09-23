@@ -14,7 +14,9 @@ const resources = {
         forgot: "忘记密码?",
         designer: "设计者：张军 | 维捷布斯克国立技术大学 (VSTU)",
       },
+      // 👈 已新增 welcome 词条
       menu: {
+        welcome: "主页",
         dashboard: "数据看板",
         product: "商品管理",
         sales: "收银台",
@@ -32,8 +34,6 @@ const resources = {
         replenish_title: "🤖 智能补货建议 (算法自动计算)",
         export_btn: "导出补货清单 (Excel)",
       },
-
-      // 👇 补齐了商品页所有词条
       product: {
         list: "商品列表",
         sales_record: "销售记录",
@@ -51,8 +51,6 @@ const resources = {
         store: "所属门店",
         action: "操作",
       },
-
-      // 👇 补齐了收银台所有词条
       sales: {
         title: "🛒 收银台（模拟扫码枪：输入商品ID后按回车）",
         placeholder: "请扫描商品条码或手动输入ID (例如: 1, 2, 3...)",
@@ -66,8 +64,6 @@ const resources = {
         carbon: "本次碳减排量",
         checkout: "确认收款",
       },
-
-      // 👇 补齐了调拨页所有词条
       transfer: {
         tab_apply: "发起调拨",
         tab_record: "调拨记录",
@@ -89,8 +85,6 @@ const resources = {
         detail: "调拨详情",
         time: "操作时间",
       },
-
-      // 👇 补齐了系统设置页所有词条
       system: {
         title: "系统设置与审计日志",
         refresh: "刷新日志",
@@ -118,7 +112,9 @@ const resources = {
         forgot: "Forgot Password?",
         designer: "Designer: Zhang Jun | VSTU",
       },
+      // 👈 已新增 welcome 词条
       menu: {
+        welcome: "Home",
         dashboard: "Dashboard",
         product: "Products",
         sales: "Cashier",
@@ -136,7 +132,6 @@ const resources = {
         replenish_title: "🤖 Smart Replenishment",
         export_btn: "Export Excel",
       },
-
       product: {
         list: "Product List",
         sales_record: "Sales Records",
@@ -154,7 +149,6 @@ const resources = {
         store: "Store",
         action: "Action",
       },
-
       sales: {
         title: "🛒 Cashier (Input ID and press Enter)",
         placeholder: "Scan barcode or input ID (e.g., 1, 2, 3...)",
@@ -168,7 +162,6 @@ const resources = {
         carbon: "Carbon Reduction",
         checkout: "Checkout",
       },
-
       transfer: {
         tab_apply: "Apply Transfer",
         tab_record: "Transfer Records",
@@ -190,7 +183,6 @@ const resources = {
         detail: "Details",
         time: "Time",
       },
-
       system: {
         title: "System Settings & Audit Logs",
         refresh: "Refresh Logs",
@@ -218,7 +210,9 @@ const resources = {
         forgot: "Забыли пароль?",
         designer: "Разработчик: Чжан Цзюнь | ВГТУ",
       },
+      // 👈 已新增 welcome 词条
       menu: {
+        welcome: "Главная",
         dashboard: "Панель управления",
         product: "Товары",
         sales: "Касса",
@@ -236,7 +230,6 @@ const resources = {
         replenish_title: "🤖 Умное пополнение",
         export_btn: "Экспорт в Excel",
       },
-
       product: {
         list: "Список товаров",
         sales_record: "История продаж",
@@ -254,7 +247,6 @@ const resources = {
         store: "Магазин",
         action: "Действие",
       },
-
       sales: {
         title: "🛒 Касса (Введите ID и нажмите Enter)",
         placeholder: "Сканируйте или введите ID (например: 1, 2, 3...)",
@@ -268,7 +260,6 @@ const resources = {
         carbon: "Снижение CO2",
         checkout: "Оформить",
       },
-
       transfer: {
         tab_apply: "Запросить",
         tab_record: "История",
@@ -290,7 +281,6 @@ const resources = {
         detail: "Детали",
         time: "Время",
       },
-
       system: {
         title: "Настройки и журналы",
         refresh: "Обновить",

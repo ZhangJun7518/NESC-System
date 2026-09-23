@@ -1,6 +1,7 @@
 /**
  * 商品管理页面
  * 修复：增加 i18n.language 作为 Table 的 key，解决表头语言不切换问题
+ * 适配：移动端响应式，表格支持左右滑动，页面自然上下滚动
  */
 import React, { useState, useEffect } from "react";
 import {
@@ -33,7 +34,7 @@ import AuthButton from "../components/AuthButton";
 import { useTranslation } from "react-i18next";
 
 const Product = () => {
-  // 👈 核心修复：解构出 i18n 实例
+  // 解构出 i18n 实例，用于切换语言时强制重绘表格
   const { t, i18n } = useTranslation();
 
   const [data, setData] = useState([]);
@@ -46,6 +47,7 @@ const Product = () => {
   const [stockInForm] = Form.useForm();
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
 
+  // 获取商品列表
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -58,6 +60,7 @@ const Product = () => {
     }
   };
 
+  // 获取销售记录
   const fetchSales = async () => {
     try {
       const res = await getSalesList();
@@ -72,6 +75,7 @@ const Product = () => {
     fetchSales();
   }, []);
 
+  // 新增商品
   const handleAdd = async (values) => {
     try {
       if (userInfo.role === "store_manager")
@@ -86,6 +90,7 @@ const Product = () => {
     }
   };
 
+  // 删除商品
   const handleDelete = async (id) => {
     try {
       await deleteProduct(id);
@@ -96,6 +101,7 @@ const Product = () => {
     }
   };
 
+  // 商品入库
   const handleStockIn = async (values) => {
     try {
       await stockIn({ goods_id: currentGoods.id, quantity: values.quantity });
@@ -108,7 +114,7 @@ const Product = () => {
     }
   };
 
-  // 商品列表列（全部加上了 || 兜底）
+  // 商品列表列（全部加上了 || 兜底，防止语言包缺失时白屏）
   const productColumns = [
     { title: "ID", dataIndex: "id", key: "id", width: 60 },
     {
@@ -244,7 +250,8 @@ const Product = () => {
                 >
                   {t("product.add") || "新增商品"}
                 </AuthButton>
-                {/* 👈 核心修复：key={i18n.language} */}
+                {/* 核心修复：key={i18n.language} 保证语言切换时表头同步 */}
+                {/* 手机端适配：scroll={{ x: 'max-content' }} 允许横向滑动 */}
                 <Table
                   key={i18n.language}
                   rowKey="id"
@@ -252,6 +259,7 @@ const Product = () => {
                   dataSource={data}
                   loading={loading}
                   pagination={{ pageSize: 10 }}
+                  scroll={{ x: "max-content" }}
                 />
               </>
             ),
@@ -259,7 +267,6 @@ const Product = () => {
           {
             key: "2",
             label: t("product.sales_record") || "销售记录",
-            // 👈 核心修复：key={i18n.language}
             children: (
               <Table
                 key={i18n.language}
@@ -267,12 +274,14 @@ const Product = () => {
                 columns={salesColumns}
                 dataSource={salesData}
                 pagination={{ pageSize: 10 }}
+                scroll={{ x: "max-content" }}
               />
             ),
           },
         ]}
       />
 
+      {/* 新增商品弹窗 */}
       <Modal
         title={t("product.add") || "新增商品"}
         open={isModalOpen}
@@ -348,6 +357,7 @@ const Product = () => {
         </Form>
       </Modal>
 
+      {/* 入库弹窗 */}
       <Modal
         title={`${t("product.stock_in") || "入库"} - ${currentGoods?.goods_name || ""}`}
         open={isStockInOpen}

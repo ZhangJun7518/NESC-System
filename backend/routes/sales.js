@@ -1,149 +1,114 @@
-import React, { useState, useEffect } from "react";
-import { Card, Input, Button, Table, message, Row, Col, Statistic } from "antd";
-import { ScanOutlined, CloudOutlined } from "@ant-design/icons";
-import { getProductList } from "../api/product";
-import { checkout } from "../api/sales";
+/**
+ * 销售与收银路由
+ * 包含：收银结算（扣减库存+计算碳减排）、获取销售记录
+ */
+const express = require("express");
+const router = express.Router();
+const pool = require("../db");
+const { checkPermission } = require("../middlewares/auth");
 
-const Sales = () => {
-  const [barcode, setBarcode] = useState("");
-  const [cart, setCart] = useState([]);
-  const [allProducts, setAllProducts] = useState([]);
+// 所有接口都需要登录鉴权
+router.use(require("../middlewares/auth"));
 
-  useEffect(() => {
-    getProductList().then((res) => setAllProducts(res.data));
-  }, []);
+// ==================== 1. 收银结算 ====================
+router.post(
+  "/checkout",
+  checkPermission("sales:checkout"),
+  async (req, res) => {
+    const { goods_id, quantity } = req.body;
+    const store_id = req.user.store_id;
+    const operator_id = req.user.id;
 
-  const handleScan = (e) => {
-    if (e.key === "Enter") {
-      const product = allProducts.find((p) => p.id === Number(barcode));
-      if (!product) {
-        message.error("未找到该商品，请检查条码号！");
-      } else if (product.stock <= 0) {
-        message.warning("该商品库存不足！");
-      } else {
-        const existing = cart.find((item) => item.id === product.id);
-        if (existing) {
-          setCart(
-            cart.map((item) =>
-              item.id === product.id
-                ? { ...item, quantity: item.quantity + 1 }
-                : item,
-            ),
-          );
-        } else {
-          setCart([...cart, { ...product, quantity: 1 }]);
-        }
-        message.success(`已添加: ${product.goods_name}`);
-      }
-      setBarcode("");
+    // 基础校验
+    if (!goods_id || !quantity || quantity <= 0) {
+      return res.json({ code: 400, msg: "参数错误" });
     }
-  };
 
-  const handleCheckout = async () => {
-    if (cart.length === 0) return message.warning("购物车为空");
+    const connection = await pool.getConnection();
     try {
-      for (const item of cart) {
-        await checkout({ goods_id: item.id, quantity: item.quantity });
-      }
-      message.success("结算成功！库存已扣减");
-      setCart([]);
-      getProductList().then((res) => setAllProducts(res.data));
-    } catch (error) {
-      message.error("结算失败，请重试");
+      await connection.beginTransaction();
+
+      // 1. 查询商品并锁定行（防止并发超卖）
+      const [goods] = await connection.query(
+        "SELECT * FROM goods WHERE id = ? FOR UPDATE",
+        [goods_id],
+      );
+      if (goods.length === 0) throw new Error("商品不存在");
+      const item = goods[0];
+
+      if (item.stock < quantity)
+        throw new Error("库存不足，当前库存: " + item.stock);
+
+      // 2. 计算总价和碳减排量
+      const total_price = item.sell_price * quantity;
+      const carbon_saving_total = item.carbon_saving * quantity;
+
+      // 3. 扣减库存
+      await connection.query(
+        "UPDATE goods SET stock = stock - ? WHERE id = ?",
+        [quantity, goods_id],
+      );
+
+      // 4. 写入销售记录
+      await connection.query(
+        "INSERT INTO sales(goods_id, quantity, total_price, carbon_saving_total, store_id, operator_id) VALUES (?,?,?,?,?,?)",
+        [
+          goods_id,
+          quantity,
+          total_price,
+          carbon_saving_total,
+          store_id,
+          operator_id,
+        ],
+      );
+
+      // 5. 写入审计日志
+      await connection.query(
+        "INSERT INTO audit_logs(user_id, action, details) VALUES (?, ?, ?)",
+        [
+          operator_id,
+          "销售出库",
+          `销售商品 ${item.goods_name} ${quantity}${item.unit}，金额 ${total_price}元`,
+        ],
+      );
+
+      await connection.commit();
+      res.json({
+        code: 200,
+        msg: "结算成功",
+        data: { total_price, carbon_saving_total },
+      });
+    } catch (err) {
+      await connection.rollback();
+      console.error("收银结算失败:", err);
+      res.json({ code: 500, msg: err.message });
+    } finally {
+      connection.release();
     }
-  };
+  },
+);
 
-  const totalAmount = cart.reduce(
-    (sum, item) => sum + item.sell_price * item.quantity,
-    0,
-  );
-  const totalCarbon = cart.reduce(
-    (sum, item) => sum + item.carbon_saving * item.quantity,
-    0,
-  );
+// ==================== 2. 获取销售记录 ====================
+router.get("/list", async (req, res) => {
+  try {
+    const isAdmin = req.user.role === "admin" || req.user.role === "hq_leader";
+    const storeFilter = isAdmin
+      ? ""
+      : `WHERE s.store_id = ${req.user.store_id}`;
 
-  const columns = [
-    { title: "商品名称", dataIndex: "goods_name" },
-    {
-      title: "单价",
-      dataIndex: "sell_price",
-      render: (text) => `¥${Number(text).toFixed(2)}`,
-    },
-    { title: "数量", dataIndex: "quantity" },
-    {
-      title: "小计",
-      render: (_, record) =>
-        `¥${(record.sell_price * record.quantity).toFixed(2)}`,
-    },
-  ];
+    const [rows] = await pool.query(`
+      SELECT s.*, g.goods_name 
+      FROM sales s 
+      JOIN goods g ON s.goods_id = g.id 
+      ${storeFilter} 
+      ORDER BY s.sale_time DESC 
+      LIMIT 100
+    `);
+    res.json({ code: 200, data: rows });
+  } catch (err) {
+    console.error("获取销售记录失败:", err);
+    res.json({ code: 500, msg: "获取销售记录失败" });
+  }
+});
 
-  return (
-    // 👈 关键：Row高度100%，内部各自处理滚动
-    <Row gutter={16} style={{ height: "100%", overflow: "hidden" }}>
-      <Col span={16} style={{ height: "100%" }}>
-        <Card
-          title="🛒 收银台（模拟扫码枪：输入商品ID后按回车）"
-          bordered={false}
-          style={{ height: "100%", display: "flex", flexDirection: "column" }}
-          bodyStyle={{
-            flex: 1,
-            overflow: "hidden",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Input
-            size="large"
-            placeholder="请扫描商品条码或手动输入ID (例如: 1, 2, 3...)"
-            prefix={<ScanOutlined />}
-            value={barcode}
-            onChange={(e) => setBarcode(e.target.value)}
-            onKeyDown={handleScan}
-            autoFocus
-            style={{ marginBottom: 20, flexShrink: 0 }}
-          />
-          {/* 👈 表格内部滚动 */}
-          <Table
-            rowKey="id"
-            columns={columns}
-            dataSource={cart}
-            pagination={false}
-            scroll={{ y: "calc(100vh - 350px)" }}
-          />
-        </Card>
-      </Col>
-
-      <Col span={8} style={{ height: "100%" }}>
-        <Card title="结算信息" bordered={false} style={{ height: "100%" }}>
-          <Statistic
-            title="本次销售总额"
-            value={totalAmount}
-            precision={2}
-            prefix="¥"
-            valueStyle={{ color: "#cf1322", fontSize: 32 }}
-          />
-          <Statistic
-            title="本次碳减排量"
-            value={totalCarbon}
-            precision={2}
-            suffix="kg"
-            prefix={<CloudOutlined />}
-            style={{ marginTop: 20 }}
-            valueStyle={{ color: "#1890ff" }}
-          />
-          <Button
-            type="primary"
-            size="large"
-            block
-            style={{ marginTop: 40, height: 50, fontSize: 18 }}
-            onClick={handleCheckout}
-          >
-            确认收款
-          </Button>
-        </Card>
-      </Col>
-    </Row>
-  );
-};
-
-export default Sales;
+module.exports = router;
