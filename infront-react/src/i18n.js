@@ -5,9 +5,10 @@ const resources = {
   // ==================== 简体中文 ====================
   zh: {
     translation: {
-      app_name: "新能源智控系统",
+      //app_name: "新能源智控系统",
+      app_name: import.meta.env.VITE_APP_TITLE || "网络商店库存管理系统",
       login: {
-        title: "新能源供应链智控系统",
+        title: import.meta.env.VITE_APP_TITLE || "网络商店库存管理系统",
         username: "用户名",
         password: "密码",
         login_btn: "登 录",
@@ -105,7 +106,9 @@ const resources = {
     translation: {
       app_name: "NESC",
       login: {
-        title: "New Energy Supply Chain System",
+        title:
+          import.meta.env.VITE_APP_TITLE ||
+          "Network Store Inventory Management System",
         username: "Username",
         password: "Password",
         login_btn: "Login",
@@ -203,7 +206,9 @@ const resources = {
     translation: {
       app_name: "NESC",
       login: {
-        title: "Система управления цепочками поставок",
+        title:
+          import.meta.env.VITE_APP_TITLE ||
+          "Система управления запасами сетевого магазина",
         username: "Имя пользователя",
         password: "Пароль",
         login_btn: "Войти",

@@ -191,7 +191,9 @@ const MainLayout = () => {
             overflow: "hidden",
           }}
         >
-          {collapsed ? "NESC" : t("app_name")}
+          {collapsed
+            ? "NSIMS"
+            : import.meta.env.VITE_APP_TITLE || "网络商店库存管理系统"}
         </div>
         <Menu
           theme="dark"
@@ -396,7 +398,8 @@ const MainLayout = () => {
             padding: "5px 0",
           }}
         >
-          © 2026 张军 | 维捷布斯克国立技术大学 (VSTU)
+          © 2026 张军 | 维捷布斯克国立技术大学 (VSTU) -{" "}
+          {import.meta.env.VITE_APP_TITLE || "网络商店库存管理系统"}
         </Footer>
       </Layout>
     </Layout>

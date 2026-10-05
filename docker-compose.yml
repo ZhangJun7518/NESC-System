@@ -37,7 +37,11 @@ services:
 
   # ========== 3. 前端服务 ==========
   frontend:
-    build: ./infront-react
+    build:
+      context: ./infront-react
+      args:
+        VITE_APP_TITLE: 网络商店库存管理系统
+
     container_name: nesc-frontend
     ports:
       - "80:80" # 浏览器通过 http://localhost 或电脑IP访问
