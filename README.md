@@ -1,6 +1,6 @@
-New Energy Supply Chain Intelligent Control System (NESC)
+# Development and Optimisation of a Network Store Inventory Management System
 
-> An integrated inventory management and intelligent decision-making platform for chain stores in the new energy and manufacturing sectors.
+> A web-based inventory management and supply chain decision support system for network stores.
 > Author: Zhang Jun | Vitebsk State Technological University (VSTU)
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
@@ -11,90 +11,67 @@ New Energy Supply Chain Intelligent Control System (NESC)
 
 ---
 
-## 📖 Project Overview
+## Overview
 
-**NESC** is an **intelligent supply chain management and control system** designed for chain stores in the new energy and manufacturing industries. It establishes a complete operational closed-loop—spanning **product management, barcode-based POS checkout, inventory deduction, inter-store transfers, and intelligent replenishment to data dashboards**. By integrating digital-intelligent capabilities such as **carbon emission calculations, dynamic inventory alerts, and intelligent replenishment algorithms**, the system helps enterprises transition from simple "digitization" to "data-driven intelligence."
+This project presents the design, implementation, and optimisation of a **Network Store Inventory Management System (NSIMS)**. The system covers the complete business loop from **product management, barcode-based checkout, inventory deduction, cross-store transfer, intelligent replenishment to data dashboard**.
 
-The system supports **four user roles** (System Administrator, Headquarters Executive, Store Manager, and Stock Clerk) and features demo-friendly functions such as **trilingual switching (Chinese/English/Russian)**, **mobile barcode scanning simulation**, and **one-click test data generation**. It is an ideal portfolio project for those specializing in **Data Product Management** or **Supply Chain Digitalization**. ---
-
-## ✨ Key Features
-
-### 🔐 Multi-Role Access Control
-- **System Admin**: Full permissions; ability to switch demo identities
-- **HQ Executive**: Global dashboard, inter-store transfers, data export
-- **Store Manager**: Store-specific dashboard, product management, stock-in, transfer initiation
-- **Stock Clerk**: POS access only; no dashboard or product editing permissions
-
-### 📦 Closed-Loop Inventory Management
-- Product management (CRUD operations, barcode generation)
-- Stock-in processing (inventory increase, audit logs)
-- Barcode-based POS (transactional inventory deduction, carbon reduction tracking)
-- Sales record lookup
-- Intelligent inter-store transfers (auto-create products at target store, transfer history logging)
-
-### 📊 Data Dashboards & Smart Algorithms
-- Key metrics: Total products, today's sales, carbon reduction, low-stock alerts
-- 7-day sales trends (line chart)
-- Inventory distribution by category (pie chart)
-- Smart restocking suggestions (algorithmic calculation)
-- One-click restocking list export (Excel)
-
-### 🌍 Internationalization & User Experience
-- Seamless switching between Chinese, English, and Russian
-- Multi-tab interface (preserves operational state)
-- Tech-style dark login page (dynamic video background)
-- Main content area features background imagery with a "frosted glass" overlay
-- Responsive layout; view full data at 100% zoom
-
-### 🛡️ System Security & Stability
-- JWT authentication + dual-layer permission checks (frontend & backend)
-- Global exception handling (prevents service crashes)
-- Frontend ErrorBoundary (prevents "white screen" errors)
-- Action audit logs (traceability)
-- One-click generation of 500 test records (for demo purposes)
+The system supports **four roles** (System Administrator, HQ Leader, Store Manager, Stocker) and features **Chinese/English/Russian multi-language switching**, **mobile barcode scanning simulation**, and **one-click test data generation**.
 
 ---
 
-## 🧱 Tech Stack
+## Key Features
 
-| Layer | Technology |
-|-------|------------|
-| Frontend | React 18 + Vite + Ant Design 5 + ECharts + i18next + Axios |
-| Backend | Node.js + Express + MySQL (mysql2) + JWT + bcryptjs + exceljs |
-| Database | MySQL | 8.0 (Docker Deployment) |
-| Deployment | Docker Compose + Nginx (Optional) |
-| Tools | VS Code + Git + Postman / Thunder Client |
+### Multi-Role Access Control
+
+- **System Administrator**: Full permissions, role switching for demonstration
+- **HQ Leader**: Global dashboard, cross-store transfer, data export
+- **Store Manager**: Store dashboard, product management, stock-in, transfer
+- **Stocker**: Checkout only, no dashboard or product editing rights
+
+### Complete Inventory Loop
+
+- Product management (CRUD, barcode generation)
+- Stock-in (inventory increase, audit log)
+- Barcode checkout (transaction-based inventory deduction)
+- Sales record query
+- Cross-store intelligent transfer (auto-create target store product, transfer history)
+
+### Dashboard and Intelligent Algorithms
+
+- Total products, today's sales, inventory alerts
+- 7-day sales trend (line chart)
+- Category inventory distribution (pie chart)
+- Intelligent replenishment suggestion (auto-calculated)
+- One-click export of replenishment list (Excel)
+
+### Internationalisation and User Experience
+
+- Chinese / English / Russian seamless switching
+- Multi-tab navigation, preserving operation state
+- Dark tech-style login page (dynamic video background)
+- Background image with frosted glass overlay
+- Responsive layout, mobile-friendly
+
+### Security and Stability
+
+- JWT authentication with frontend/backend dual permission interception
+- Global exception handler, service remains stable
+- Frontend ErrorBoundary, page never goes blank
+- Audit logs for traceability
+- One-click generation of test records for demonstration
 
 ---
 
-## 🏗️ System Architecture
-┌──────────────────────────────────────────────────────────┐
-│ Frontend (React + Vite) │
-│ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ │
-│ │ Login Page │ │ Dashboard │ │ Product Mgmt │ │ POS/Checkout │ │
-│ └─────────┘ └─────────┘ └─────────┘ └─────────┘ │
-│ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ │
-│ │ Smart Transfer │ │ System Settings │ │ Audit Logs │ │ Multi-language │ │
-│ └─────────┘ └─────────┘ └─────────┘ └─────────┘ │
-└──────────────────────────────────────────────────────────┘
-│ Axios / JWT
-▼
-┌──────────────────────────────────────────────────────────┐
-│ Backend API (Node.js + Express) │
-│ /api/auth Login & Authentication │
-│ /api/dashboard Dashboard Stats + Smart Replenishment + Excel Export │
-│ /api/product CRUD + Stock-in │
-│ /api/sales Checkout + Inventory Deduction + Carbon Reduction │
-│ /api/transfer Inter-store Transfer + Transfer Records │
-│ /api/system Audit Logs + One-click Test Data Generation │
-└──────────────────────────────────────────────────────────┘
-│ mysql2 Connection Pool
-▼
-┌──────────────────────────────────────────────────────────┐
-│ MySQL 8.0 (Docker) │
-│ users / goods / sales / audit_logs / replenish_requests │
-└──────────────────────────────────────────────────────────┘
+## Tech Stack
 
-## 🏗️ PRoject content
-<img width="753" height="1027" alt="image" src="https://github.com/user-attachments/assets/6c3f4a3b-3fab-473c-8420-b2f2f84fe67d" />
+| Layer      | Technology                                                    |
+| ---------- | ------------------------------------------------------------- |
+| Frontend   | React 18 + Vite + Ant Design 5 + ECharts + i18next + Axios    |
+| Backend    | Node.js + Express + MySQL (mysql2) + JWT + bcryptjs + exceljs |
+| Database   | MySQL 8.0 (Docker)                                            |
+| Deployment | Docker Compose                                                |
+| Tools      | VS Code + Git                                                 |
 
+---
+
+## System Architecture
