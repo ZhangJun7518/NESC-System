@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, Button, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,17 @@ import { useTranslation } from "react-i18next";
 const Login = () => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [form] = Form.useForm(); // 👈 新增：表单实例
   const navigate = useNavigate();
+
+  // 👈 新增：进入登录页时，检查是否有预填的用户名
+  useEffect(() => {
+    const prefill = localStorage.getItem("prefill_username");
+    if (prefill) {
+      form.setFieldsValue({ username: prefill, password: "123456" });
+      localStorage.removeItem("prefill_username"); // 用完即删
+    }
+  }, [form]);
 
   const onFinish = async (values) => {
     setLoading(true);
@@ -16,6 +26,8 @@ const Login = () => {
       const res = await login(values);
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("userInfo", JSON.stringify(res.data.userInfo));
+      // 👈 保存原始登录用户，用于切换角色后恢复
+      localStorage.setItem("originalUser", JSON.stringify(res.data.userInfo));
       message.success("登录成功");
       navigate("/dashboard");
     } catch (error) {
@@ -27,19 +39,16 @@ const Login = () => {
 
   return (
     <div className="login-container">
-      {/* 👈 1. 视频背景 */}
       <video autoPlay loop muted playsInline className="bg-video">
         <source src="/4468754-uhd_3840_2160_24fps.mp4" type="video/mp4" />
         您的浏览器不支持 HTML5 视频。
       </video>
-
-      {/* 👈 2. 半透明黑色遮罩，保证登录框文字清晰可见 */}
       <div className="video-overlay"></div>
 
-      {/* 👈 3. 登录卡片 */}
       <div className="login-card">
         <div className="login-title">{t("login.title")}</div>
-        <Form name="login" onFinish={onFinish} size="large">
+        {/* 👈 绑定 form 实例 */}
+        <Form form={form} name="login" onFinish={onFinish} size="large">
           <Form.Item
             name="username"
             rules={[{ required: true, message: "请输入用户名!" }]}

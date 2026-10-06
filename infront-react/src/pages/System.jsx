@@ -1,3 +1,10 @@
+/**
+ * 系统设置与审计日志页面
+ * 功能：
+ * 1. 查看系统操作日志（谁在什么时间做了什么）
+ * 2. 管理员专属：一键生成模拟销售数据（用于答辩救场）
+ * 3. 数据备份、权限管理、系统参数等入口（预留占位）
+ */
 import React, { useState, useEffect } from "react";
 import { Card, Table, Button, message, Tag, Space } from "antd";
 import {
@@ -15,6 +22,7 @@ const System = () => {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // 获取审计日志
   const fetchLogs = async () => {
     setLoading(true);
     try {
@@ -31,6 +39,7 @@ const System = () => {
     fetchLogs();
   }, []);
 
+  // 一键生成测试数据（救场神技）
   const handleGenerateMock = async () => {
     try {
       await generateMockData();
@@ -40,11 +49,14 @@ const System = () => {
     }
   };
 
-  // 假按钮的提示
+  // 功能开发中提示
   const handleFeatureDev = (featureName) => {
-    message.info(`【${featureName}】功能正在开发中，敬请期待...`);
+    message.info(
+      `${featureName} - ${t("system.dev_tip") || "功能正在开发中，敬请期待..."}`,
+    );
   };
 
+  // 日志表格列（表头使用多语言）
   const columns = [
     { title: t("system.id") || "ID", dataIndex: "id", key: "id", width: 60 },
     {
@@ -72,7 +84,7 @@ const System = () => {
 
   return (
     <Card
-      title={t("system.title") || "系统审计日志"}
+      title={t("system.title") || "系统设置与审计日志"}
       size="small"
       bordered={false}
       style={{ height: "100%", display: "flex", flexDirection: "column" }}
@@ -89,7 +101,7 @@ const System = () => {
         </AuthButton>
       }
     >
-      {/* 👈 刷新日志 + 假系统设置按钮 */}
+      {/* 工具栏 */}
       <Space style={{ margin: "12px 16px", flexWrap: "wrap" }}>
         <Button
           type="primary"
@@ -102,37 +114,38 @@ const System = () => {
         <Button
           icon={<DatabaseOutlined />}
           size="small"
-          onClick={() => handleFeatureDev("数据备份")}
+          onClick={() => handleFeatureDev(t("system.backup") || "数据备份")}
         >
-          数据备份
+          {t("system.backup") || "数据备份"}
         </Button>
         <Button
           icon={<SafetyCertificateOutlined />}
           size="small"
-          onClick={() => handleFeatureDev("权限管理")}
+          onClick={() => handleFeatureDev(t("system.permission") || "权限管理")}
         >
-          权限管理
+          {t("system.permission") || "权限管理"}
         </Button>
         <Button
           icon={<ToolOutlined />}
           size="small"
-          onClick={() => handleFeatureDev("系统参数")}
+          onClick={() => handleFeatureDev(t("system.params") || "系统参数")}
         >
-          系统参数
+          {t("system.params") || "系统参数"}
         </Button>
       </Space>
 
+      {/* 日志表格：key={i18n.language} 保证切换语言时表头同步刷新 */}
       <Table
         key={i18n.language}
         rowKey="id"
         columns={columns}
         dataSource={logs}
         loading={loading}
-        pagination={false}
-        scroll={{ y: "calc(100vh - 350px)" }}
-        style={{ marginTop: 12 }}
+        pagination={{ pageSize: 15, size: "small" }}
+        scroll={{ x: "max-content", y: "calc(100vh - 380px)" }}
       />
     </Card>
   );
 };
+
 export default System;

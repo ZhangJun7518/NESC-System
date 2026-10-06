@@ -1,3 +1,7 @@
+/**
+ * 数据看板页面
+ * 包含：统计卡片、近7日销售趋势、分类库存占比、智能补货建议表格
+ */
 import React, { useEffect, useState } from "react";
 import { Row, Col, Card, Statistic, Table, Tag, message, Button } from "antd";
 import {
@@ -69,14 +73,16 @@ const Dashboard = () => {
     }
   };
 
+  // 👈 折线图：标题上移，避免遮挡
   const lineOption = {
     title: {
       text: t("dashboard.trend_title") || "近7日销售趋势",
       left: "center",
+      top: 5,
       textStyle: { color: "#003a70", fontSize: 13 },
     },
     tooltip: { trigger: "axis", confine: true },
-    grid: { top: 40, right: 20, bottom: 30, left: 40 },
+    grid: { top: 50, right: 30, bottom: 30, left: 45 },
     xAxis: {
       type: "category",
       data: trendData.map((item) => item.date),
@@ -96,10 +102,12 @@ const Dashboard = () => {
     ],
   };
 
+  // 👈 饼图：标题上移，中心下移，避免遮挡
   const pieOption = {
     title: {
       text: t("dashboard.category_title") || "分类库存占比",
       left: "center",
+      top: 5,
       textStyle: { color: "#003a70", fontSize: 13 },
     },
     tooltip: { trigger: "item" },
@@ -107,6 +115,7 @@ const Dashboard = () => {
       {
         type: "pie",
         radius: "55%",
+        center: ["50%", "55%"],
         label: { show: true, formatter: "{b}: {c}", fontSize: 10 },
         data: categoryData.map((item) => ({
           value: item.value,
@@ -142,7 +151,7 @@ const Dashboard = () => {
       key: "warning_num",
     },
     {
-      title: "建议补货量",
+      title: t("dashboard.suggest_quantity") || "建议补货量",
       dataIndex: "suggest_quantity",
       key: "suggest_quantity",
       render: (text) => <Tag color="green">{text}</Tag>,
@@ -151,9 +160,8 @@ const Dashboard = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-      {/* 👈 使用响应式断点：手机上一行1个，平板一行2个，电脑一行4个 */}
-      <Row gutter={[8, 8]}>
-        <Col xs={24} sm={12} md={6}>
+      <Row gutter={8}>
+        <Col span={6}>
           <Card size="small" bodyStyle={{ padding: "8px 12px" }}>
             <Statistic
               title={t("dashboard.total_goods") || "总商品数"}
@@ -163,7 +171,7 @@ const Dashboard = () => {
             />
           </Card>
         </Col>
-        <Col xs={24} sm={12} md={6}>
+        <Col span={6}>
           <Card size="small" bodyStyle={{ padding: "8px 12px" }}>
             <Statistic
               title={t("dashboard.today_sales") || "今日销售额 (¥)"}
@@ -174,7 +182,7 @@ const Dashboard = () => {
             />
           </Card>
         </Col>
-        <Col xs={24} sm={12} md={6}>
+        <Col span={6}>
           <Card size="small" bodyStyle={{ padding: "8px 12px" }}>
             <Statistic
               title={t("dashboard.today_carbon") || "今日碳减排 (kg)"}
@@ -185,7 +193,7 @@ const Dashboard = () => {
             />
           </Card>
         </Col>
-        <Col xs={24} sm={12} md={6}>
+        <Col span={6}>
           <Card size="small" bodyStyle={{ padding: "8px 12px" }}>
             <Statistic
               title={t("dashboard.warning_count") || "库存预警数"}
@@ -197,21 +205,20 @@ const Dashboard = () => {
         </Col>
       </Row>
 
-      {/* 👈 图表区域：手机上一行1个，电脑上一行2个 */}
-      <Row gutter={[8, 8]}>
-        <Col xs={24} md={16}>
+      <Row gutter={8} style={{ height: "200px" }}>
+        <Col span={16}>
           <Card
             size="small"
-            style={{ height: "220px" }}
+            style={{ height: "100%" }}
             bodyStyle={{ height: "100%", padding: 4 }}
           >
             <ReactECharts option={lineOption} style={{ height: "100%" }} />
           </Card>
         </Col>
-        <Col xs={24} md={8}>
+        <Col span={8}>
           <Card
             size="small"
-            style={{ height: "220px" }}
+            style={{ height: "100%" }}
             bodyStyle={{ height: "100%", padding: 4 }}
           >
             <ReactECharts option={pieOption} style={{ height: "100%" }} />
@@ -230,14 +237,12 @@ const Dashboard = () => {
         }
         bodyStyle={{ padding: 0 }}
       >
-        {/* 👈 手机端表格：去掉内部高度限制，允许横向滚动，纵向自然展开 */}
         <Table
           key={i18n.language}
           rowKey="id"
           columns={columns}
           dataSource={warnings}
           pagination={{ pageSize: 10, size: "small" }}
-          scroll={{ x: "max-content" }}
         />
       </Card>
     </div>

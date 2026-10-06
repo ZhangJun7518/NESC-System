@@ -5,17 +5,15 @@ const resources = {
   // ==================== 简体中文 ====================
   zh: {
     translation: {
-      //app_name: "新能源智控系统",
-      app_name: import.meta.env.VITE_APP_TITLE || "网络商店库存管理系统",
+      app_name: "网络商店库存管理系统",
       login: {
-        title: import.meta.env.VITE_APP_TITLE || "网络商店库存管理系统",
+        title: "NSIM-System",
         username: "用户名",
         password: "密码",
         login_btn: "登 录",
         forgot: "忘记密码?",
         designer: "设计者：张军 | 维捷布斯克国立技术大学 (VSTU)",
       },
-      // 👈 已新增 welcome 词条
       menu: {
         welcome: "主页",
         dashboard: "数据看板",
@@ -24,7 +22,10 @@ const resources = {
         transfer: "智能调拨",
         system: "系统设置",
       },
-      header: { switch_role: "一键切换角色", logout: "退出登录" },
+      header: {
+        switch_role: "一键切换角色",
+        logout: "退出登录",
+      },
       dashboard: {
         total_goods: "总商品数",
         today_sales: "今日销售额 (¥)",
@@ -34,6 +35,7 @@ const resources = {
         category_title: "分类库存占比",
         replenish_title: "🤖 智能补货建议 (算法自动计算)",
         export_btn: "导出补货清单 (Excel)",
+        suggest_quantity: "建议补货量",
       },
       product: {
         list: "商品列表",
@@ -51,9 +53,15 @@ const resources = {
         carbon: "碳减排(kg)",
         store: "所属门店",
         action: "操作",
+        quantity: "数量",
+        subtotal: "小计",
+        unit_price: "单价",
+        total_price: "销售总额 (¥)",
+        sale_time: "销售时间",
+        sales_quantity: "销售数量",
       },
       sales: {
-        title: "🛒 收银台（模拟扫码枪：输入商品ID后按回车）",
+        title: "🛒 收银台（输入商品ID后按回车）",
         placeholder: "请扫描商品条码或手动输入ID (例如: 1, 2, 3...)",
         not_found: "未找到该商品，请检查条码号！",
         out_of_stock: "该商品库存不足！",
@@ -64,6 +72,7 @@ const resources = {
         total: "本次销售总额",
         carbon: "本次碳减排量",
         checkout: "确认收款",
+        settlement: "结算信息",
       },
       transfer: {
         tab_apply: "发起调拨",
@@ -97,6 +106,10 @@ const resources = {
         time: "操作时间",
         gen_success: "已重新生成 500 条随机销售数据，请去数据看板查看！",
         gen_fail: "生成失败",
+        backup: "数据备份",
+        permission: "权限管理",
+        params: "系统参数",
+        dev_tip: "功能正在开发中，敬请期待...",
       },
     },
   },
@@ -104,18 +117,15 @@ const resources = {
   // ==================== 英文 ====================
   en: {
     translation: {
-      app_name: "NESC",
+      app_name: "Network Store Inventory Management System",
       login: {
-        title:
-          import.meta.env.VITE_APP_TITLE ||
-          "Network Store Inventory Management System",
+        title: "NSIM-System",
         username: "Username",
         password: "Password",
         login_btn: "Login",
         forgot: "Forgot Password?",
         designer: "Designer: Zhang Jun | VSTU",
       },
-      // 👈 已新增 welcome 词条
       menu: {
         welcome: "Home",
         dashboard: "Dashboard",
@@ -124,7 +134,10 @@ const resources = {
         transfer: "Transfer",
         system: "Settings",
       },
-      header: { switch_role: "Switch Role", logout: "Logout" },
+      header: {
+        switch_role: "Switch Role",
+        logout: "Logout",
+      },
       dashboard: {
         total_goods: "Total Products",
         today_sales: "Today's Sales (¥)",
@@ -134,6 +147,7 @@ const resources = {
         category_title: "Category Stock",
         replenish_title: "🤖 Smart Replenishment",
         export_btn: "Export Excel",
+        suggest_quantity: "Suggested Quantity",
       },
       product: {
         list: "Product List",
@@ -151,6 +165,12 @@ const resources = {
         carbon: "CO2 (kg)",
         store: "Store",
         action: "Action",
+        quantity: "Quantity",
+        subtotal: "Subtotal",
+        unit_price: "Unit Price",
+        total_price: "Total Price (¥)",
+        sale_time: "Sale Time",
+        sales_quantity: "Quantity",
       },
       sales: {
         title: "🛒 Cashier (Input ID and press Enter)",
@@ -164,6 +184,7 @@ const resources = {
         total: "Total Amount",
         carbon: "Carbon Reduction",
         checkout: "Checkout",
+        settlement: "Settlement Info",
       },
       transfer: {
         tab_apply: "Apply Transfer",
@@ -197,6 +218,10 @@ const resources = {
         time: "Time",
         gen_success: "Successfully generated 500 mock sales records!",
         gen_fail: "Generation failed",
+        backup: "Data Backup",
+        permission: "Permission",
+        params: "System Parameters",
+        dev_tip: "Feature under development, coming soon...",
       },
     },
   },
@@ -204,18 +229,15 @@ const resources = {
   // ==================== 俄文 ====================
   ru: {
     translation: {
-      app_name: "NESC",
+      app_name: "Система управления запасами сетевого магазина",
       login: {
-        title:
-          import.meta.env.VITE_APP_TITLE ||
-          "Система управления запасами сетевого магазина",
+        title: "NSIM-System",
         username: "Имя пользователя",
         password: "Пароль",
         login_btn: "Войти",
         forgot: "Забыли пароль?",
         designer: "Разработчик: Чжан Цзюнь | ВГТУ",
       },
-      // 👈 已新增 welcome 词条
       menu: {
         welcome: "Главная",
         dashboard: "Панель управления",
@@ -224,7 +246,10 @@ const resources = {
         transfer: "Распределение",
         system: "Настройки",
       },
-      header: { switch_role: "Сменить роль", logout: "Выйти" },
+      header: {
+        switch_role: "Сменить роль",
+        logout: "Выйти",
+      },
       dashboard: {
         total_goods: "Всего товаров",
         today_sales: "Продажи за сегодня (¥)",
@@ -234,6 +259,7 @@ const resources = {
         category_title: "Запасы по категориям",
         replenish_title: "🤖 Умное пополнение",
         export_btn: "Экспорт в Excel",
+        suggest_quantity: "Рекомендуемое количество",
       },
       product: {
         list: "Список товаров",
@@ -251,6 +277,12 @@ const resources = {
         carbon: "CO2 (kg)",
         store: "Магазин",
         action: "Действие",
+        quantity: "Количество",
+        subtotal: "Подытог",
+        unit_price: "Цена за единицу",
+        total_price: "Общая сумма (¥)",
+        sale_time: "Время продажи",
+        sales_quantity: "Количество",
       },
       sales: {
         title: "🛒 Касса (Введите ID и нажмите Enter)",
@@ -264,6 +296,7 @@ const resources = {
         total: "Итого",
         carbon: "Снижение CO2",
         checkout: "Оформить",
+        settlement: "Информация об оплате",
       },
       transfer: {
         tab_apply: "Запросить",
@@ -297,6 +330,10 @@ const resources = {
         time: "Время",
         gen_success: "Создано 500 тестовых записей!",
         gen_fail: "Ошибка создания",
+        backup: "Резервное копирование",
+        permission: "Права доступа",
+        params: "Параметры системы",
+        dev_tip: "Функция в разработке, скоро будет доступна...",
       },
     },
   },

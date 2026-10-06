@@ -82,15 +82,15 @@ const Sales = () => {
 
   // ==================== 表格列定义 ====================
   const columns = [
-    { title: t("product.name") || "商品名称", dataIndex: "goods_name" },
+    { title: t("product.name"), dataIndex: "goods_name" },
     {
-      title: "单价",
+      title: t("product.unit_price"),
       dataIndex: "sell_price",
       render: (text) => `¥${Number(text).toFixed(2)}`,
     },
-    { title: "数量", dataIndex: "quantity" },
+    { title: t("product.quantity"), dataIndex: "quantity" },
     {
-      title: "小计",
+      title: t("product.subtotal"),
       render: (_, record) =>
         `¥${(record.sell_price * record.quantity).toFixed(2)}`,
     },
@@ -127,7 +127,11 @@ const Sales = () => {
 
       {/* 右侧：结算卡片。在电脑上占 8 份宽，手机上占 24 份宽（占满整行） */}
       <Col xs={24} md={8}>
-        <Card title="结算信息" bordered={false}>
+        <Card
+          title={t("sales.settlement")}
+          bordered={false}
+          style={{ height: "100%" }}
+        >
           <Statistic
             title={t("sales.total") || "本次销售总额"}
             value={totalAmount}
