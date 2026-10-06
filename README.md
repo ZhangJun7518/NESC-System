@@ -1,6 +1,7 @@
 # Development and Optimisation of a Network Store Inventory Management System
 
 > A web-based inventory management and supply chain decision support system for network stores.
+>
 > Author: Zhang Jun | Vitebsk State Technological University (VSTU)
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
@@ -16,6 +17,8 @@
 This project presents the design, implementation, and optimisation of a **Network Store Inventory Management System (NSIMS)**. The system covers the complete business loop from **product management, barcode-based checkout, inventory deduction, cross-store transfer, intelligent replenishment to data dashboard**.
 
 The system supports **four roles** (System Administrator, HQ Leader, Store Manager, Stocker) and features **Chinese/English/Russian multi-language switching**, **mobile barcode scanning simulation**, and **one-click test data generation**.
+
+> For detailed system design, implementation, and testing, please refer to the thesis document.
 
 ---
 
@@ -75,3 +78,24 @@ The system supports **four roles** (System Administrator, HQ Leader, Store Manag
 ---
 
 ## System Architecture
+
+Network-Store-Inventory-Management-System/
+├── backend/ # Backend service
+│ ├── middlewares/ # JWT auth, global error handler
+│ ├── routes/ # API routes
+│ ├── db.js # MySQL connection pool
+│ ├── app.js # Entry file
+│ └── package.json
+├── infront-react/ # Frontend project
+│ ├── public/ # Static assets
+│ ├── src/
+│ │ ├── api/ # Axios wrapper
+│ │ ├── components/ # Shared components
+│ │ ├── layouts/ # Main layout
+│ │ ├── pages/ # Pages
+│ │ ├── App.jsx
+│ │ └── i18n.js # Multi-language config
+│ └── package.json
+├── init_sql/ # Database init script
+├── docker-compose.yml # Docker orchestration
+└── README.md
