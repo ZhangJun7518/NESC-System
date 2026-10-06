@@ -1,0 +1,9 @@
+feat: unify system branding and optimize user interaction
+
+- Rename system to NSIM-System on login page and sidebar
+- Complete Chinese/English/Russian translations
+- Auto-fill username on login page after role switching
+- Restore original user on logout when impersonating
+- Adjust chart titles to avoid overlapping with data
+- Remove Home button from sidebar
+- Update README to align with thesis title
