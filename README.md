@@ -99,3 +99,6 @@ Network-Store-Inventory-Management-System/
 ├── init_sql/ # Database init script
 ├── docker-compose.yml # Docker orchestration
 └── README.md
+
+<img width="895" height="726" alt="image" src="https://github.com/user-attachments/assets/c77205cb-5604-47db-83d1-23e89f9630bb" />
+
