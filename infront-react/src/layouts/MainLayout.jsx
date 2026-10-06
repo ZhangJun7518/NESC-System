@@ -96,7 +96,7 @@ const MainLayout = () => {
     }
   };
 
-  // 👈 菜单：去掉 Home 按钮
+  // 菜单：去掉 Home 按钮
   const getMenuItems = () => {
     const role = userInfo.role;
     if (role === "stocker") {
@@ -183,6 +183,7 @@ const MainLayout = () => {
         collapsed={collapsed}
         onCollapse={setCollapsed}
         theme="dark"
+        width={220}
         style={{
           background: "#001529",
           position: isMobile ? "fixed" : "sticky",
@@ -199,14 +200,18 @@ const MainLayout = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            fontSize: 16,
+            fontSize: collapsed ? 14 : 14,
             fontWeight: "bold",
             background: "#002140",
-            whiteSpace: "nowrap",
+            whiteSpace: "normal",
+            lineHeight: 1.3,
+            textAlign: "center",
+            padding: "0 8px",
             overflow: "hidden",
           }}
         >
-          {collapsed ? "NSIM" : "NSIM-System"}
+          {/* 👈 折叠时显示 NSIM，展开时根据语言显示完整名称 */}
+          {collapsed ? "NSIM" : t("app_name")}
         </div>
         <Menu
           theme="dark"
