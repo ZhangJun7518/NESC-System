@@ -7,6 +7,8 @@ import Product from "./pages/Product";
 import Sales from "./pages/Sales";
 import Transfer from "./pages/Transfer"; // 👈 新增
 import System from "./pages/System"; // 👈 新增
+import Inventory from "./pages/Inventory";
+import Replenish from "./pages/Replenish";
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -33,6 +35,8 @@ function App() {
           <Route path="sales" element={<Sales />} />
           <Route path="transfer" element={<Transfer />} />
           <Route path="system" element={<System />} />
+          <Route path="inventory" element={<Inventory />} />
+          <Route path="replenish" element={<Replenish />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/login" replace />} />

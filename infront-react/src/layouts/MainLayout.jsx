@@ -20,6 +20,7 @@ import {
   DownOutlined,
   CarOutlined,
   GlobalOutlined,
+  ThunderboltOutlined, // 👈 新增：智能补货图标
 } from "@ant-design/icons";
 import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
 import { login } from "../api/auth";
@@ -96,7 +97,7 @@ const MainLayout = () => {
     }
   };
 
-  // 菜单：去掉 Home 按钮
+  // 菜单：去掉 Home 按钮，新增库存管理和智能补货
   const getMenuItems = () => {
     const role = userInfo.role;
     if (role === "stocker") {
@@ -121,9 +122,19 @@ const MainLayout = () => {
           label: <Link to="/product">{t("menu.product")}</Link>,
         },
         {
+          key: "/inventory",
+          icon: <AppstoreOutlined />,
+          label: <Link to="/inventory">{t("menu.inventory")}</Link>,
+        },
+        {
           key: "/sales",
           icon: <ShoppingCartOutlined />,
           label: <Link to="/sales">{t("menu.sales")}</Link>,
+        },
+        {
+          key: "/replenish",
+          icon: <ThunderboltOutlined />,
+          label: <Link to="/replenish">{t("menu.replenish")}</Link>,
         },
         {
           key: "/transfer",
@@ -149,9 +160,19 @@ const MainLayout = () => {
         label: <Link to="/product">{t("menu.product")}</Link>,
       },
       {
+        key: "/inventory",
+        icon: <AppstoreOutlined />,
+        label: <Link to="/inventory">{t("menu.inventory")}</Link>,
+      },
+      {
         key: "/sales",
         icon: <ShoppingCartOutlined />,
         label: <Link to="/sales">{t("menu.sales")}</Link>,
+      },
+      {
+        key: "/replenish",
+        icon: <ThunderboltOutlined />,
+        label: <Link to="/replenish">{t("menu.replenish")}</Link>,
       },
       {
         key: "/transfer",
@@ -200,7 +221,7 @@ const MainLayout = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            fontSize: collapsed ? 14 : 14,
+            fontSize: 14,
             fontWeight: "bold",
             background: "#002140",
             whiteSpace: "normal",
@@ -210,7 +231,6 @@ const MainLayout = () => {
             overflow: "hidden",
           }}
         >
-          {/* 👈 折叠时显示 NSIM，展开时根据语言显示完整名称 */}
           {collapsed ? "NSIM" : t("app_name")}
         </div>
         <Menu

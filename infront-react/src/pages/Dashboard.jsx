@@ -1,7 +1,3 @@
-/**
- * 数据看板页面
- * 包含：统计卡片、近7日销售趋势、分类库存占比、智能补货建议表格
- */
 import React, { useEffect, useState } from "react";
 import { Row, Col, Card, Statistic, Table, Tag, message, Button } from "antd";
 import {
@@ -17,6 +13,7 @@ import {
   getDashboardCategory,
   getDashboardWarnings,
   exportReplenish,
+  getTurnover,
 } from "../api/dashboard";
 import { useTranslation } from "react-i18next";
 
@@ -31,6 +28,12 @@ const Dashboard = () => {
   const [trendData, setTrendData] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
   const [warnings, setWarnings] = useState([]);
+  const [turnover, setTurnover] = useState({
+    salesCost: 0,
+    stockValue: 0,
+    turnoverRate: 0,
+    turnoverDays: 0,
+  });
 
   useEffect(() => {
     fetchData();
@@ -38,16 +41,19 @@ const Dashboard = () => {
 
   const fetchData = async () => {
     try {
-      const [resStats, resTrend, resCategory, resWarnings] = await Promise.all([
-        getDashboardStats(),
-        getDashboardTrend(),
-        getDashboardCategory(),
-        getDashboardWarnings(),
-      ]);
+      const [resStats, resTrend, resCategory, resWarnings, resTurnover] =
+        await Promise.all([
+          getDashboardStats(),
+          getDashboardTrend(),
+          getDashboardCategory(),
+          getDashboardWarnings(),
+          getTurnover(),
+        ]);
       setStats(resStats.data);
       setTrendData(resTrend.data);
       setCategoryData(resCategory.data);
       setWarnings(resWarnings.data);
+      setTurnover(resTurnover.data);
     } catch (error) {
       message.error("数据获取失败");
     }
@@ -62,7 +68,7 @@ const Dashboard = () => {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `补货清单_${new Date().getTime()}.xlsx`;
+      link.download = `replenish_${new Date().getTime()}.xlsx`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -73,7 +79,6 @@ const Dashboard = () => {
     }
   };
 
-  // 👈 折线图：标题上移，避免遮挡
   const lineOption = {
     title: {
       text: t("dashboard.trend_title") || "近7日销售趋势",
@@ -102,7 +107,6 @@ const Dashboard = () => {
     ],
   };
 
-  // 👈 饼图：标题上移，中心下移，避免遮挡
   const pieOption = {
     title: {
       text: t("dashboard.category_title") || "分类库存占比",
@@ -160,6 +164,7 @@ const Dashboard = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+      {/* 第一行：统计卡片 */}
       <Row gutter={8}>
         <Col span={6}>
           <Card size="small" bodyStyle={{ padding: "8px 12px" }}>
@@ -205,6 +210,42 @@ const Dashboard = () => {
         </Col>
       </Row>
 
+      {/* 第二行：库存周转率 */}
+      <Row gutter={8}>
+        <Col span={8}>
+          <Card size="small" bodyStyle={{ padding: "8px 12px" }}>
+            <Statistic
+              title="库存周转率（近30天）"
+              value={turnover.turnoverRate}
+              suffix="次"
+              valueStyle={{ color: "#1890ff", fontSize: 18 }}
+            />
+          </Card>
+        </Col>
+        <Col span={8}>
+          <Card size="small" bodyStyle={{ padding: "8px 12px" }}>
+            <Statistic
+              title="周转天数"
+              value={turnover.turnoverDays}
+              suffix="天"
+              valueStyle={{ color: "#faad14", fontSize: 18 }}
+            />
+          </Card>
+        </Col>
+        <Col span={8}>
+          <Card size="small" bodyStyle={{ padding: "8px 12px" }}>
+            <Statistic
+              title="库存总价值"
+              value={turnover.stockValue}
+              precision={2}
+              prefix="¥"
+              valueStyle={{ color: "#3f8600", fontSize: 18 }}
+            />
+          </Card>
+        </Col>
+      </Row>
+
+      {/* 第三行：图表 */}
       <Row gutter={8} style={{ height: "200px" }}>
         <Col span={16}>
           <Card
@@ -226,6 +267,7 @@ const Dashboard = () => {
         </Col>
       </Row>
 
+      {/* 第四行：补货建议表 */}
       <Card
         title={t("dashboard.replenish_title") || "🤖 智能补货建议"}
         size="small"
@@ -248,4 +290,5 @@ const Dashboard = () => {
     </div>
   );
 };
+
 export default Dashboard;

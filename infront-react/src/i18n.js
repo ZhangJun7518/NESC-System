@@ -21,6 +21,8 @@ const resources = {
         sales: "收银台",
         transfer: "智能调拨",
         system: "系统设置",
+        inventory: "库存管理",
+        replenish: "智能补货",
       },
       header: {
         switch_role: "一键切换角色",
@@ -133,6 +135,8 @@ const resources = {
         sales: "Cashier",
         transfer: "Transfer",
         system: "Settings",
+        inventory: "Inventory",
+        replenish: "Replenishment",
       },
       header: {
         switch_role: "Switch Role",
@@ -245,6 +249,8 @@ const resources = {
         sales: "Касса",
         transfer: "Распределение",
         system: "Настройки",
+        inventory: "Инвентарь",
+        replenish: "Пополнение",
       },
       header: {
         switch_role: "Сменить роль",

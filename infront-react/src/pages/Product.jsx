@@ -1,7 +1,6 @@
 /**
  * 商品管理页面
- * 修复：增加 i18n.language 作为 Table 的 key，解决表头语言不切换问题
- * 适配：移动端响应式，表格支持左右滑动，页面自然上下滚动
+ * 支持：商品列表、销售记录、从仓库平面图跳转过来时自动过滤
  */
 import React, { useState, useEffect } from "react";
 import {
@@ -23,6 +22,7 @@ import {
   QrcodeOutlined,
   ImportOutlined,
 } from "@ant-design/icons";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import {
   getProductList,
   addProduct,
@@ -34,8 +34,12 @@ import AuthButton from "../components/AuthButton";
 import { useTranslation } from "react-i18next";
 
 const Product = () => {
-  // 解构出 i18n 实例，用于切换语言时强制重绘表格
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+
+  // 👈 从 URL 读取搜索关键词（从仓库平面图跳转过来时带过来的）
+  const [searchParams] = useSearchParams();
+  const searchKeyword = searchParams.get("search") || "";
 
   const [data, setData] = useState([]);
   const [salesData, setSalesData] = useState([]);
@@ -114,7 +118,7 @@ const Product = () => {
     }
   };
 
-  // 商品列表列（全部加上了 || 兜底，防止语言包缺失时白屏）
+  // 商品列表列
   const productColumns = [
     { title: "ID", dataIndex: "id", key: "id", width: 60 },
     {
@@ -202,7 +206,7 @@ const Product = () => {
     },
   ];
 
-  // 销售记录列（全部加上了 || 兜底）
+  // 销售记录列
   const salesColumns = [
     { title: "ID", dataIndex: "id", key: "id", width: 60 },
     {
@@ -231,6 +235,11 @@ const Product = () => {
     },
   ];
 
+  // 👈 根据 URL 参数过滤商品数据
+  const displayData = searchKeyword
+    ? data.filter((item) => item.goods_name.includes(searchKeyword))
+    : data;
+
   return (
     <Card bordered={false}>
       <Tabs
@@ -241,22 +250,38 @@ const Product = () => {
             label: t("product.list") || "商品列表",
             children: (
               <>
-                <AuthButton
-                  permission="product:add"
-                  type="primary"
-                  icon={<PlusOutlined />}
-                  onClick={() => setIsModalOpen(true)}
-                  style={{ marginBottom: 16 }}
-                >
-                  {t("product.add") || "新增商品"}
-                </AuthButton>
-                {/* 核心修复：key={i18n.language} 保证语言切换时表头同步 */}
-                {/* 手机端适配：scroll={{ x: 'max-content' }} 允许横向滑动 */}
+                <Space style={{ marginBottom: 16 }} wrap>
+                  <AuthButton
+                    permission="product:add"
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    {t("product.add") || "新增商品"}
+                  </AuthButton>
+
+                  {/* 👈 从平面图跳转过来时的筛选提示 */}
+                  {searchKeyword && (
+                    <Tag
+                      color="blue"
+                      style={{ padding: "4px 8px", fontSize: 14 }}
+                    >
+                      正在筛选：<strong>{searchKeyword}</strong>
+                      <a
+                        onClick={() => navigate("/product")}
+                        style={{ marginLeft: 8, color: "#1890ff" }}
+                      >
+                        清除
+                      </a>
+                    </Tag>
+                  )}
+                </Space>
+
                 <Table
                   key={i18n.language}
                   rowKey="id"
                   columns={productColumns}
-                  dataSource={data}
+                  dataSource={displayData}
                   loading={loading}
                   pagination={{ pageSize: 10 }}
                   scroll={{ x: "max-content" }}
@@ -384,4 +409,5 @@ const Product = () => {
     </Card>
   );
 };
+
 export default Product;
