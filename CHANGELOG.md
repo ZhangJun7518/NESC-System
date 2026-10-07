@@ -31,3 +31,25 @@ All notable changes to this project will be documented in this file.
 
 - Updated README to align with thesis title:
   "Development and Optimisation of a Network Store Inventory Management System"
+
+## [2026-10-07]
+
+### Added
+
+- Inventory management module (inbound, outbound, warnings, stock ledger)
+- Smart replenishment module with weighted moving average algorithm
+- Replenishment order management (create, update status, confirm receipt)
+- Inventory turnover rate analysis (rate, days, stock value)
+- 2D warehouse map with zone partitioning and clickable slots
+- Stock ledger recording every inventory change
+
+### Changed
+
+- Dashboard now includes turnover rate cards
+- Product page supports URL-based filtering from warehouse map
+- Warehouse map supports zone-based layout (A/B/C/D zones)
+
+### Fixed
+
+- Removed React.StrictMode to avoid G6 double-render issues
+- Fixed G6 5.x click event handling via node ID reverse lookup
